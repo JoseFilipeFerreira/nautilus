@@ -1,13 +1,23 @@
 #!/bin/bash
-if [ -e .env ]
+SCRIPTPATH=$(dirname $0)
+echo $SCRIPTPATH
+if [ ping -q -c 1 www.google.com &> /dev/null ]
 then
-    source .env/bin/activate
+    echo 'No internet :('
 else
-    virtualenv --python=python3.6 .env
-    source .env/bin/activate
-    pip install -r requirements.txt --upgrade
+    if [ -e $SCRIPTPATH'/.env' ]
+    then
+        source $SCRIPTPATH'/.env/bin/activate'
+    else
+        virtualenv --python=python3.6 $SCRIPTPATH'/.env'
+        source $SCRIPTPATH'/.env/bin/activate'
+        pip install -r $SCRIPTPATH'/requirements.txt' --upgrade
+    fi
+
+    mkdir $SCRIPTPATH'/tmp'
+    python3.6 $SCRIPTPATH'/nautilus.py' background.jpg MiEI 31 8 0.2 $SCRIPTPATH
+    rm -r $SCRIPTPATH'/tmp'
+    deactivate
+    feh --bg-scale $SCRIPTPATH'/wallpaper.png'
 fi
 
-python3.6 nautilus.py background.jpg LEO 31 8 0.2
-rm tmp/*
-deactivate

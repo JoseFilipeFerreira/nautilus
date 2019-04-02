@@ -9,55 +9,64 @@ from operator    import itemgetter
 from PIL         import Image, ImageOps, ImageDraw
 
 bot = commands.Bot(command_prefix = '|')
-
 bot.remove_command('help')
 
 def main():
-    bot.run(open('auth').readline().rstrip())
+    bot.run(open(sys.argv[6] + '/auth').readline().rstrip())
 
 @bot.event
 async def on_ready():
-    stats = {}
-    pastWeek = datetime.now() - timedelta(days=int(sys.argv[3]))
+    stats = {} 
+    pastTimeStamp = datetime.now() - timedelta(days=int(sys.argv[3]))
     s = None
     for server in bot.servers:
         if server.name == sys.argv[2]:
             s = server
     if s == None:
         print("No server found")
+        sys.exit()
         return
 
     for channel in s.channels:
-        lastMessage = None
         print(channel.name)
+        lastMessage = None
+        total = 0
         while True:
             size = 0
             async for msg in bot.logs_from(channel, before = lastMessage, limit = 100):
-                if msg.timestamp > pastWeek and not msg.author.bot:
+                if msg.timestamp > pastTimeStamp and not msg.author.bot:
                     if msg.author.id in stats:
                         stats[msg.author.id]["msg"] += 1
                     else:
                         url = msg.author.avatar_url.replace("webp", "png")
                         if url != "":
                             stats[msg.author.id] = {"url": url, "msg": 1}
-                    size += 1 
+                    size += 1
+                total += size
                 lastMessage = msg
-            if size != 100 or (lastMessage != None and msg.timestamp < pastWeek):
+            if size != 100 or (lastMessage != None and msg.timestamp < pastTimeStamp):
                 break
-
-    for id in stats.keys():
-        print("Dowloading " + id + ".png")
-        r = requests.get(stats[id]["url"], allow_redirects=True)
-        open("tmp/" + id + ".png", 'wb').write(r.content)
+        print(total)
 
     sortedStats = []
     for id in stats.keys():
-        sortedStats.append({"fn": "tmp/" + id + ".png", "msg": stats[id]["msg"]})
+        sortedStats.append({
+            "id": id,
+            "url": stats[id]["url"],
+            "fn": sys.argv[6] + "/tmp/" + id + ".png",
+            "msg": stats[id]["msg"]})
     sortedStats = sorted(sortedStats, key=itemgetter('msg'), reverse = True)
+    
+    sortedStats = sortedStats[:int(sys.argv[4])]
+    print(sortedStats)
+    for stat in sortedStats:
+        print("Dowloading " + stat["id"] + ".png")
+        r = requests.get(stat["url"], allow_redirects=True)
+        open(stat["fn"], 'wb').write(r.content)
 
     scl = fib(int(sys.argv[4]))
     pos = positions(int(sys.argv[4]))
-    background = Image.open(sys.argv[1])
+    background = Image.open(sys.argv[6] + '/' + sys.argv[1])
 
     factor = int((background.height/scl[0]) * 5)
     total = Image.new('RGBA', ((scl[0] + scl[1]) *factor, scl[0] *factor), (255, 0, 0, 0))
@@ -66,12 +75,12 @@ async def on_ready():
         profileImage, mask = getProfilePic(sortedStats[n], scl[n]*factor)
         total.paste(profileImage, box=multTuple(pos[n], factor), mask=mask)
     
-    total.save("foreground.png", "PNG")
+    total.save(sys.argv[6] + "/foreground.png", "PNG")
 
     total.resize((background.size[0], background.size[1]), Image.ANTIALIAS)
     total = scale(background, total, float(sys.argv[5]))
     background.paste(total, (background.width - total.width, 0), total)
-    background.save("wallpaper.png", "PNG")
+    background.save(sys.argv[6] + "/wallpaper.png", "PNG")
 
     await bot.logout()
 
