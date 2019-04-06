@@ -24,29 +24,30 @@ async def on_ready():
             s = server
     if s == None:
         print("No server found")
-        sys.exit()
+        await bot.logout()
         return
 
     for channel in s.channels:
-        print(channel.name)
-        lastMessage = None
-        total = 0
-        while True:
-            size = 0
-            async for msg in bot.logs_from(channel, before = lastMessage, limit = 100):
-                if msg.timestamp > pastTimeStamp and not msg.author.bot:
-                    if msg.author.id in stats:
-                        stats[msg.author.id]["msg"] += 1
-                    else:
-                        url = msg.author.avatar_url.replace("webp", "png")
-                        if url != "":
-                            stats[msg.author.id] = {"url": url, "msg": 1}
-                    size += 1
-                total += size
-                lastMessage = msg
-            if size != 100 or (lastMessage != None and msg.timestamp < pastTimeStamp):
-                break
-        print(total)
+        if channel.type == discord.ChannelType.text:
+            print(channel.name)
+            lastMessage = None
+            total = 0
+            while True:
+                size = 0
+                async for msg in bot.logs_from(channel, before = lastMessage, limit = 100):
+                    if msg.timestamp > pastTimeStamp and not msg.author.bot:
+                        if msg.author.id in stats:
+                            stats[msg.author.id]["msg"] += 1
+                        else:
+                            url = msg.author.avatar_url.replace("webp", "png")
+                            if url != "":
+                                stats[msg.author.id] = {"url": url, "msg": 1}
+                        size += 1
+                    total += size
+                    lastMessage = msg
+                if size != 100 or (lastMessage != None and msg.timestamp < pastTimeStamp):
+                    break
+            print(total)
 
     sortedStats = []
     for id in stats.keys():
