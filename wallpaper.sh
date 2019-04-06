@@ -17,7 +17,7 @@ else
     fi
 
     mkdir -p "$SCRIPTPATH"'/tmp'
-    python3.6 "$SCRIPTPATH"'/nautilus.py' background.jpg "$1" 31 "${2:8}" 0.2 "$SCRIPTPATH" || exit 5
+    python3.6 "$SCRIPTPATH"'/nautilus.py' background.jpg "$1" 31 "${2:-8}" 0.2 "$SCRIPTPATH" || exit 5
     rm -r "$SCRIPTPATH"'/tmp'
     deactivate
     feh --bg-scale "$SCRIPTPATH"'/wallpaper.png'
