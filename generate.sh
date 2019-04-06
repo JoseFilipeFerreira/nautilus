@@ -1,2 +1,4 @@
+#!/bin/bash
+
 SCRIPTPATH=$(dirname "$SCRIPT")
-find ./ -name 'wallpaper.png' -mmin +31 -exec $SCRIPTPATH'/wallpaper.sh' \;
+find "$SCRIPTPATH" -name 'wallpaper.png' -mmin +31 -exec sh -c "$SCRIPTPATH'/wallpaper.sh' MiEI" \;
