@@ -18,6 +18,7 @@ def main():
 async def on_ready():
     stats = {} 
     pastTimeStamp = datetime.now() - timedelta(days=int(sys.argv[3]))
+    #Get server
     s = None
     for server in bot.servers:
         if server.name == sys.argv[2]:
@@ -27,28 +28,39 @@ async def on_ready():
         await bot.logout()
         return
 
+    #Get server stats
     for channel in s.channels:
         if channel.type == discord.ChannelType.text:
-            print(channel.name)
             lastMessage = None
             total = 0
-            while True:
+            size = 100
+            while size == 100:
                 size = 0
-                async for msg in bot.logs_from(channel, before = lastMessage, limit = 100):
+                messages = bot.logs_from(
+                        channel,
+                        before = lastMessage,
+                        limit = 100)
+                async for msg in messages:
+                    size += 1
                     if msg.timestamp > pastTimeStamp and not msg.author.bot:
                         if msg.author.id in stats:
                             stats[msg.author.id]["msg"] += 1
                         else:
                             url = msg.author.avatar_url.replace("webp", "png")
                             if url != "":
-                                stats[msg.author.id] = {"url": url, "msg": 1}
-                        size += 1
-                    total += size
+                                stats[msg.author.id] = {
+                                        "url": url,
+                                        "msg": 1}            
                     lastMessage = msg
-                if size != 100 or (lastMessage != None and msg.timestamp < pastTimeStamp):
-                    break
-            print(total)
+                    if lastMessage != None and msg.timestamp < pastTimeStamp:
+                        size = 0
+                        break
+                total += size
+            if total > 0:
+                print(channel.name)
+                print(total)
 
+    #Sort server stats
     sortedStats = []
     for id in stats.keys():
         sortedStats.append({
@@ -57,14 +69,16 @@ async def on_ready():
             "fn": sys.argv[6] + "/tmp/" + id + ".png",
             "msg": stats[id]["msg"]})
     sortedStats = sorted(sortedStats, key=itemgetter('msg'), reverse = True)
-    
     sortedStats = sortedStats[:int(sys.argv[4])]
     print(sortedStats)
+
+    #Dowload Pictures
     for stat in sortedStats:
         print("Dowloading " + stat["id"] + ".png")
         r = requests.get(stat["url"], allow_redirects=True)
         open(stat["fn"], 'wb').write(r.content)
 
+    #Generate Images
     scl = fib(int(sys.argv[4]))
     pos = positions(int(sys.argv[4]))
     background = Image.open(sys.argv[6] + '/' + sys.argv[1])
@@ -101,6 +115,7 @@ def scale(background, total, scl):
     return total.resize((int(total.width * factor * scl), int(total.height * factor * scl)))
 
 def fib(n):
+#reversed fibonacci sequence
     if n <= 0:
         return []
     if n == 1:
