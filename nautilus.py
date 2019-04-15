@@ -57,8 +57,7 @@ async def on_ready():
                         break
                 total += size
             if total > 0:
-                print(channel.name)
-                print(total)
+                print("{0}:\t{1}".format(channel.name, total))
 
     #Sort server stats
     print("----------------")
@@ -76,7 +75,7 @@ async def on_ready():
         name = member.name
         if member.nick != None:
             name = member.nick
-        print("{0}: {1}".format(name, stat["msg"]))
+        print("{0}:\t{1}".format(name, stat["msg"]))
 
     #Dowload Pictures
     print("----------------")
