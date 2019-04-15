@@ -61,6 +61,7 @@ async def on_ready():
                 print(total)
 
     #Sort server stats
+    print("----------------")
     sortedStats = []
     for id in stats.keys():
         sortedStats.append({
@@ -70,9 +71,15 @@ async def on_ready():
             "msg": stats[id]["msg"]})
     sortedStats = sorted(sortedStats, key=itemgetter('msg'), reverse = True)
     sortedStats = sortedStats[:int(sys.argv[4])]
-    print(sortedStats)
+    for stat in sortedStats:
+        member =  s.get_member(stat["id"])
+        name = member.name
+        if member.nick != None:
+            name = member.nick
+        print("{0}: {1}".format(name, stat["msg"]))
 
     #Dowload Pictures
+    print("----------------")
     for stat in sortedStats:
         print("Dowloading " + stat["id"] + ".png")
         r = requests.get(stat["url"], allow_redirects=True)
