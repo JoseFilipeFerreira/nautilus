@@ -28,6 +28,15 @@ make altinstall
 
 - Get a discord bot Token and place it into a text file named `auth`
 
+## Examples
+
+- final image
+
+![alt text](https://github.com/JoseFilipeFerreira/Nautilus-wallpaper/blob/master/example/wallpaper.example.png)
+
+- Full resolution image of the Stats
+
+![alt text](https://github.com/JoseFilipeFerreira/Nautilus-wallpaper/blob/master/example/foreground.example.png)
 ## Built With
 * [discord.py](https://github.com/Rapptz/discord.py) - API for discord
 
