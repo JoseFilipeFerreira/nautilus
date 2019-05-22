@@ -33,6 +33,7 @@ async def on_ready():
         if channel.type == discord.ChannelType.text:
             lastMessage = None
             total = 0
+            read = 0
             size = 100
             while size == 100:
                 size = 0
@@ -43,6 +44,7 @@ async def on_ready():
                 async for msg in messages:
                     size += 1
                     if msg.timestamp > pastTimeStamp and not msg.author.bot:
+                        read += 1
                         if msg.author.id in stats:
                             stats[msg.author.id]["msg"] += 1
                         else:
@@ -56,8 +58,8 @@ async def on_ready():
                         size = 0
                         break
                 total += size
-            if total > 0:
-                print("{0}:\t{1}".format(channel.name, total))
+            if read > 0:
+                print("{0}:\t{1}".format(channel.name, read))
 
     #Sort server stats
     print("----------------")
