@@ -71,6 +71,8 @@ async def on_ready():
             "fn": sys.argv[6] + "/tmp/" + id + ".png",
             "msg": stats[id]["msg"]})
     sortedStats = sorted(sortedStats, key=itemgetter('msg'), reverse = True)
+    print("Individual Users: {}".format(len(sortedStats)))
+    print("----------------")
     sortedStats = sortedStats[:int(sys.argv[4])]
     for stat in sortedStats:
         member =  s.get_member(stat["id"])
