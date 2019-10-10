@@ -7,6 +7,7 @@ if ! ping -q -c 1 www.google.com &> /dev/null
 then
     echo 'No internet :('
 else
+    feh --bg-scale "$SCRIPTPATH"'/wallpaper.png'
     if [ -e "$SCRIPTPATH"'/.env' ]
     then
         source "$SCRIPTPATH"'/.env/bin/activate'
