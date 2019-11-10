@@ -3,40 +3,20 @@ Generates a wallpaper with stats from a discord server
 
 ## wallpaper.sh
 Generates and changes your wallpaper using feh
- 
-## generate.sh
-Checks if the previously generated wallpaper is ine month old and if it is calls wallpaper.sh
 
 ## Getting Started
 ### Setting up
-- Dowload python 3.6.6 from [here](https://www.python.org/ftp/python/3.6.6/) (If not already installed)
-
-- Unpack it with
-```
-tar -xvzf Python-3.6.6.tgz
-```
-```
-cd Python-3.6.6
-```
-```
-./configure
-```
-```
-make altinstall
-```
-### Credentials
-
-- Get a discord bot Token and place it into a text file named `auth`
+* Get a discord bot Token and place it into a text file named `auth`
+* run `sh wallpaper.sh`
 
 ## Examples
 
-- final image
-
+* final image
 ![alt text](https://github.com/JoseFilipeFerreira/Nautilus-wallpaper/blob/master/example/wallpaper.example.png)
 
-- Full resolution image of the Stats
-
+* Full resolution image of the Stats
 ![alt text](https://github.com/JoseFilipeFerreira/Nautilus-wallpaper/blob/master/example/foreground.example.png)
+
 ## Built With
 * [discord.py](https://github.com/Rapptz/discord.py) - API for discord
 
