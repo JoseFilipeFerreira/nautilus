@@ -90,7 +90,7 @@ async def on_ready():
     x, y = scl[0] + scl[1], scl[0]
     factor = round((int(sys.argv[3])/x) * 2)
     x, y = x * factor, y * factor
-    total = Image.new('RGBA', (x,y) , (255, 0, 0, 0))
+    total = Image.new('RGBA', (x,y) , (0, 0, 0, 0))
     for n in range(0, 8):
         profileImage, mask = getProfilePic(sortedStats[n], scl[n]*factor)
         total.paste(profileImage, box=multTuple(pos[n], factor), mask=mask)
