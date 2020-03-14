@@ -1,32 +1,35 @@
 #!/bin/bash
+# USAGE: wallup [/--no-update]
+cd $(dirname "$(readlink -f "$0")")
 
-SCRIPTPATH=$(dirname "$0")
-IMAGE="$SCRIPTPATH/background.jpg"
+IMAGE="background.jpg"
+SERVER="MiEI"
 
-echo "$SCRIPTPATH"
+[ -f 'wallpaper.png' ] && feh --no-fehbg --bg-scale 'wallpaper.png'
+[ "$1" = "--no-update" ] && exit 2
+
 if ! ping -q -c 1 www.google.com &> /dev/null
 then
     echo 'No internet :('
 else
-    feh --no-fehbg --bg-scale "$SCRIPTPATH"'/wallpaper.png'
-    if [ -e "$SCRIPTPATH"'/.env' ]
+    if [ -e '.env' ]
     then
-        source "$SCRIPTPATH"'/.env/bin/activate'
+        source '.env/bin/activate'
     else
-        virtualenv "$SCRIPTPATH"'/.env' || exit 2
-        source "$SCRIPTPATH"'/.env/bin/activate' || exit 3
-        pip install -r "$SCRIPTPATH"'/requirements.txt' --upgrade || exit 4
+        virtualenv '.env' || exit 3
+        source '.env/bin/activate' || exit 4
+        pip install -r 'requirements.txt' --upgrade || exit 5
     fi
 
-    mkdir -p "$SCRIPTPATH"'/tmp'
+    mkdir -p 'tmp'
     width=$(identify -format "%w" "$IMAGE")> /dev/null
-    python "$SCRIPTPATH"'/nautilus.py' "$1" 31 "$width" || exit 5
+    python 'nautilus.py' "$SERVER" 31 "$width" || exit 6
 
     ww=$(convert "$IMAGE" -format "%[fx:0.22*w]" info:)
-    magick $IMAGE \( "$SCRIPTPATH"/foreground.png -resize ${ww}x \) -gravity NorthEast -composite "$SCRIPTPATH"/wallpaper.png
+    magick $IMAGE \( foreground.png -resize ${ww}x \) -gravity NorthEast -composite wallpaper.png
 
-    rm -r "$SCRIPTPATH"'/tmp'
+    rm -r 'tmp'
     deactivate
-    feh --no-fehbg --bg-scale "$SCRIPTPATH"'/wallpaper.png'
+    feh --no-fehbg --bg-scale 'wallpaper.png'
 fi
 
